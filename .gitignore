@@ -91,3 +91,6 @@ my_settings.txt
 borrar/*
 
 */ExecMean.txt
+
+# I put data in this folder and ignore that
+/data
