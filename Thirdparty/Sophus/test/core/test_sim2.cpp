@@ -1,3 +1,4 @@
+#pragma GCC diagnostic ignored "-Warray-bounds"
 #include <iostream>
 
 #include <unsupported/Eigen/MatrixFunctions>
