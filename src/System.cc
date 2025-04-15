@@ -1545,24 +1545,39 @@ string System::CalculateCheckSum(string filename, int type)
     return checksum;
 }
 
-void System::SaveMapPointsAsPLY(const std::string &filename)    // Save all map points in the map to a file, added by Ontolius 
+void System::SaveMapPointsAsPLY(const std::string &filename)
 {
+    std::vector<MapPoint*> mapPoints = mpAtlas->GetAllMapPoints();
     std::ofstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Failed to open " << filename << std::endl;
         return;
     }
 
-    std::vector<MapPoint*> mapPoints = mpAtlas->GetAllMapPoints();
+    // 写入 PLY 文件头
+    file << "ply\n";
+    file << "format ascii 1.0\n";
+    file << "element vertex " << mapPoints.size() << "\n";
+    file << "property float x\n";
+    file << "property float y\n";
+    file << "property float z\n";
+    file << "property uchar red\n";
+    file << "property uchar green\n";
+    file << "property uchar blue\n";
+    file << "end_header\n";
+
+    // 写入点数据
     for (MapPoint* pMP : mapPoints) {
         if (pMP && !pMP->isBad()) {
-             Eigen::Vector3f pos = pMP->GetWorldPos();
-            file << pos[0] << " " << pos[1] << " " << pos[2] << std::endl;
+            Eigen::Vector3f pos = pMP->GetWorldPos();
+            // 默认白色，可将255,255,255替换成实际颜色（后续扩展）
+            file << pos[0] << " " << pos[1] << " " << pos[2] << " "
+                 << "255 255 255" << std::endl;
         }
     }
 
     file.close();
-    std::cout << "Saved map points to " << filename << std::endl;
+    std::cout << "Saved colored map points to " << filename << std::endl;
 }
 
 } //namespace ORB_SLAM
