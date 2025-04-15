@@ -1545,5 +1545,25 @@ string System::CalculateCheckSum(string filename, int type)
     return checksum;
 }
 
+void System::SaveMapPointsAsPLY(const std::string &filename)    // Save all map points in the map to a file, added by Ontolius 
+{
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open " << filename << std::endl;
+        return;
+    }
+
+    std::vector<MapPoint*> mapPoints = mpAtlas->GetAllMapPoints();
+    for (MapPoint* pMP : mapPoints) {
+        if (pMP && !pMP->isBad()) {
+             Eigen::Vector3f pos = pMP->GetWorldPos();
+            file << pos[0] << " " << pos[1] << " " << pos[2] << std::endl;
+        }
+    }
+
+    file.close();
+    std::cout << "Saved map points to " << filename << std::endl;
+}
+
 } //namespace ORB_SLAM
 

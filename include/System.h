@@ -186,6 +186,8 @@ public:
 
     float GetImageScale();
 
+    void SaveMapPointsAsPLY(const std::string &filename);   // Save all map points in the map to a file, added by Ontolius
+
 #ifdef REGISTER_TIMES
     void InsertRectTime(double& time);
     void InsertResizeTime(double& time);

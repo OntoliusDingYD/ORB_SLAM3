@@ -94,3 +94,6 @@ borrar/*
 
 # I put data in this folder and ignore that
 /data
+# pointcloud data
+*.ply
+*.xyz
