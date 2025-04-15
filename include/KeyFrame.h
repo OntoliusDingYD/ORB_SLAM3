@@ -305,6 +305,10 @@ public:
 
     bool bImu;
 
+    //added for colored point cloud
+    cv::Mat mImRGB;
+    //added by Ontolius 250415 1254
+
     // The following variables are accesed from only 1 thread or never change (no mutex needed).
 public:
 

@@ -162,6 +162,9 @@ public:
         return mbHasVelocity;
     }
 
+    //added for colored point cloud
+    cv::Mat mImRGB;
+    //added by Ontolius 250415 1226
 
 
 private:

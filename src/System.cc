@@ -1567,12 +1567,47 @@ void System::SaveMapPointsAsPLY(const std::string &filename)
     file << "end_header\n";
 
     // 写入点数据
+/*
     for (MapPoint* pMP : mapPoints) {
         if (pMP && !pMP->isBad()) {
             Eigen::Vector3f pos = pMP->GetWorldPos();
             // 默认白色，可将255,255,255替换成实际颜色（后续扩展）
             file << pos[0] << " " << pos[1] << " " << pos[2] << " "
                  << "255 255 255" << std::endl;
+        }
+    }
+*/
+
+    for (MapPoint* pMP : mapPoints) {
+        if (pMP && !pMP->isBad()) {
+            Eigen::Vector3f pos = pMP->GetWorldPos();
+            const auto& observations = pMP->GetObservations();
+
+            if (!observations.empty()) {
+                // 取第一个观测KeyFrame
+                KeyFrame* pKF = observations.begin()->first;
+                int idx = -1, dummy;
+                std::tie(idx, dummy) = observations.begin()->second;
+
+                if (pKF->mImRGB.empty()) continue;
+                if (idx >= pKF->mvKeysUn.size()) continue;
+
+                // 提取像素位置
+                const cv::KeyPoint& kp = pKF->mvKeysUn[idx];
+                int u = round(kp.pt.x);
+                int v = round(kp.pt.y);
+
+                // 防止越界
+                if (u >= 0 && v >= 0 && u < pKF->mImRGB.cols && v < pKF->mImRGB.rows) {
+                    cv::Vec3b color = pKF->mImRGB.at<cv::Vec3b>(v, u); // 注意行列顺序：v是y行，u是x列
+                    file << pos[0] << " " << pos[1] << " " << pos[2] << " "
+                        << (int)color[2] << " " << (int)color[1] << " " << (int)color[0] << "\n";
+                    continue;
+                }
+            }
+
+            // 若失败则默认白色
+            file << pos[0] << " " << pos[1] << " " << pos[2] << " 255 255 255\n";
         }
     }
 
