@@ -97,3 +97,5 @@ borrar/*
 # pointcloud data
 *.ply
 *.xyz
+# vscode settings
+settings.json
